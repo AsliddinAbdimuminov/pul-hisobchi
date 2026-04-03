@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pul Hisobchi</title>
+  <title>Pul Hisobchi JSON</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f7fb;
+      background: #f3f6fb;
       color: #1f2937;
     }
     .container {
@@ -30,8 +30,8 @@
       font-weight: 700;
     }
     .subtitle {
-      color: #6b7280;
       margin-top: 6px;
+      color: #6b7280;
     }
     .grid {
       display: grid;
@@ -50,10 +50,10 @@
     }
     label {
       display: block;
-      font-size: 14px;
       margin-bottom: 6px;
-      color: #374151;
+      font-size: 14px;
       font-weight: 600;
+      color: #374151;
     }
     input, select, button {
       width: 100%;
@@ -72,23 +72,17 @@
       border: none;
       cursor: pointer;
       font-weight: 700;
-      transition: 0.2s ease;
+      transition: .2s ease;
     }
-    .btn-primary {
-      background: #2563eb;
-      color: white;
-    }
+    .btn-primary { background: #2563eb; color: white; }
     .btn-primary:hover { background: #1d4ed8; }
-    .btn-danger {
-      background: #ef4444;
-      color: white;
-    }
+    .btn-danger { background: #ef4444; color: white; }
     .btn-danger:hover { background: #dc2626; }
-    .btn-secondary {
-      background: #111827;
-      color: white;
-    }
+    .btn-secondary { background: #111827; color: white; }
     .btn-secondary:hover { background: #000; }
+    .btn-success { background: #16a34a; color: white; }
+    .btn-success:hover { background: #15803d; }
+
     .summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -106,6 +100,7 @@
     .debt-in { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
     .debt-out { background: linear-gradient(135deg, #ea580c, #f97316); }
     .debt-balance { background: linear-gradient(135deg, #475569, #64748b); }
+
     .summary-label {
       font-size: 14px;
       opacity: 0.9;
@@ -116,6 +111,7 @@
       font-weight: 800;
       word-break: break-word;
     }
+
     .toolbar {
       display: flex;
       gap: 10px;
@@ -124,8 +120,20 @@
     }
     .toolbar > * {
       flex: 1;
+      min-width: 160px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .top-actions button {
+      width: auto;
       min-width: 180px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -156,38 +164,43 @@
     .badge-expense { background: #ef4444; }
     .badge-debt-in { background: #8b5cf6; }
     .badge-debt-out { background: #f97316; }
+
     .actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
     .actions button {
+      width: auto;
       padding: 8px 10px;
       font-size: 13px;
-      width: auto;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-size: 14px;
     }
     .empty {
       text-align: center;
       color: #6b7280;
       padding: 30px 10px;
     }
-    .muted {
-      color: #6b7280;
-      font-size: 13px;
-    }
-    .test-box {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      font-size: 13px;
-      color: #475569;
-    }
+
     @media (max-width: 920px) {
       .grid { grid-template-columns: 1fr; }
       .summary { grid-template-columns: 1fr; }
       .toolbar { flex-direction: column; }
+      .top-actions { flex-direction: column; }
+      .top-actions button { width: 100%; }
     }
   </style>
 </head>
@@ -196,14 +209,19 @@
     <div class="header">
       <div>
         <div class="title">Pul Hisobchi</div>
-        <div class="subtitle">Daromad, harajat va qarz yozuvlarini saqlab, avtomatik hisoblaydi</div>
+        <div class="subtitle">HTML + CSS + JS + JSON asosida ishlaydi</div>
       </div>
-      <button class="btn btn-secondary" id="clearAllBtn" type="button">Barcha ma&apos;lumotni tozalash</button>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn btn-success" id="connectFileBtn" type="button">data.json ni ulash</button>
+      <button class="btn btn-secondary" id="reloadBtn" type="button">JSON dan qayta o‘qish</button>
+      <button class="btn btn-danger" id="clearAllBtn" type="button">Barcha yozuvni o‘chirish</button>
     </div>
 
     <div class="grid">
       <div class="card">
-        <h2>Yangi yozuv qo&apos;shish</h2>
+        <h2>Yangi yozuv qo‘shish</h2>
 
         <div class="field">
           <label for="type">Turi</label>
@@ -222,12 +240,12 @@
 
         <div class="field">
           <label for="title">Nomi</label>
-          <input type="text" id="title" placeholder="Masalan: Oylik, Freelance, Ijara, Oziq-ovqat">
+          <input type="text" id="title" placeholder="Masalan: Oylik, Ijara, Akadan qarz">
         </div>
 
         <div class="field">
-          <label for="amount">Summa (so&apos;m)</label>
-          <input type="number" id="amount" placeholder="Masalan: 2500000" min="0" step="1">
+          <label for="amount">Summa (so‘m)</label>
+          <input type="number" id="amount" min="0" step="1" placeholder="Masalan: 2500000">
         </div>
 
         <div class="field">
@@ -236,45 +254,45 @@
         </div>
 
         <button class="btn btn-primary" id="saveBtn" type="button">Saqlash</button>
-        <p class="muted" style="margin-top:12px;">Bir oy ichida bir nechta daromad, harajat, qarz olish va qarz qaytarish yozuvlari kiritishingiz mumkin.</p>
-        <div class="test-box" id="testStatus">Testlar ishga tushirilmagan.</div>
+        <p class="muted" style="margin-top:12px;">Har bir yozuv avtomatik ravishda ulangan data.json faylga yoziladi.</p>
+        <div class="status" id="statusBox">Holat: data.json hali ulanmagan.</div>
       </div>
 
       <div>
         <div class="summary">
           <div class="summary-box income">
             <div class="summary-label">Jami daromad</div>
-            <div class="summary-value" id="totalIncome">0 so&apos;m</div>
+            <div class="summary-value" id="totalIncome">0 so‘m</div>
           </div>
           <div class="summary-box expense">
             <div class="summary-label">Jami harajat</div>
-            <div class="summary-value" id="totalExpense">0 so&apos;m</div>
+            <div class="summary-value" id="totalExpense">0 so‘m</div>
           </div>
           <div class="summary-box balance">
             <div class="summary-label">Qolgan pul</div>
-            <div class="summary-value" id="balance">0 so&apos;m</div>
+            <div class="summary-value" id="balance">0 so‘m</div>
           </div>
         </div>
 
-        <div class="summary" style="margin-top: 0;">
+        <div class="summary" style="margin-top:0;">
           <div class="summary-box debt-in">
             <div class="summary-label">Jami qarz olindi</div>
-            <div class="summary-value" id="totalDebtIn">0 so&apos;m</div>
+            <div class="summary-value" id="totalDebtIn">0 so‘m</div>
           </div>
           <div class="summary-box debt-out">
             <div class="summary-label">Jami qarz qaytarildi</div>
-            <div class="summary-value" id="totalDebtOut">0 so&apos;m</div>
+            <div class="summary-value" id="totalDebtOut">0 so‘m</div>
           </div>
           <div class="summary-box debt-balance">
             <div class="summary-label">Qolgan qarz</div>
-            <div class="summary-value" id="debtBalance">0 so&apos;m</div>
+            <div class="summary-value" id="debtBalance">0 so‘m</div>
           </div>
         </div>
 
         <div class="card">
           <div class="toolbar">
             <input type="month" id="filterMonth">
-            <input type="text" id="searchText" placeholder="Nom yoki izoh bo&apos;yicha qidirish">
+            <input type="text" id="searchText" placeholder="Nom yoki izoh bo‘yicha qidirish">
             <button class="btn btn-secondary" id="currentMonthBtn" type="button">Joriy oy</button>
           </div>
           <div id="tableWrap"></div>
@@ -284,328 +302,356 @@
   </div>
 
   <script>
-    (function () {
-      var STORAGE_KEY = 'pul_hisobchi_entries_v2';
-      var entries = loadEntries();
-      var editId = null;
+    let entries = [];
+    let editId = null;
+    let jsonFileHandle = null;
 
-      var typeEl = document.getElementById('type');
-      var monthEl = document.getElementById('month');
-      var titleEl = document.getElementById('title');
-      var amountEl = document.getElementById('amount');
-      var noteEl = document.getElementById('note');
-      var filterMonthEl = document.getElementById('filterMonth');
-      var searchTextEl = document.getElementById('searchText');
-      var saveBtnEl = document.getElementById('saveBtn');
-      var clearAllBtnEl = document.getElementById('clearAllBtn');
-      var currentMonthBtnEl = document.getElementById('currentMonthBtn');
-      var tableWrapEl = document.getElementById('tableWrap');
-      var testStatusEl = document.getElementById('testStatus');
+    const typeEl = document.getElementById('type');
+    const monthEl = document.getElementById('month');
+    const titleEl = document.getElementById('title');
+    const amountEl = document.getElementById('amount');
+    const noteEl = document.getElementById('note');
+    const filterMonthEl = document.getElementById('filterMonth');
+    const searchTextEl = document.getElementById('searchText');
+    const saveBtnEl = document.getElementById('saveBtn');
+    const connectFileBtnEl = document.getElementById('connectFileBtn');
+    const reloadBtnEl = document.getElementById('reloadBtn');
+    const clearAllBtnEl = document.getElementById('clearAllBtn');
+    const currentMonthBtnEl = document.getElementById('currentMonthBtn');
+    const tableWrapEl = document.getElementById('tableWrap');
+    const statusBoxEl = document.getElementById('statusBox');
 
-      function loadEntries() {
-        try {
-          var raw = localStorage.getItem(STORAGE_KEY);
-          var parsed = raw ? JSON.parse(raw) : [];
-          return Array.isArray(parsed) ? parsed : [];
-        } catch (error) {
-          console.error('Saqlangan ma\'lumotni o\'qishda xato:', error);
-          return [];
-        }
+    function setStatus(message, isError = false) {
+      statusBoxEl.textContent = 'Holat: ' + message;
+      statusBoxEl.style.background = isError ? '#fef2f2' : '#eff6ff';
+      statusBoxEl.style.borderColor = isError ? '#fecaca' : '#bfdbfe';
+      statusBoxEl.style.color = isError ? '#b91c1c' : '#1d4ed8';
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString('uz-UZ') + " so‘m";
+    }
+
+    function currentMonthValue() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      return y + '-' + m;
+    }
+
+    function resetForm() {
+      editId = null;
+      typeEl.value = 'income';
+      monthEl.value = currentMonthValue();
+      titleEl.value = '';
+      amountEl.value = '';
+      noteEl.value = '';
+      saveBtnEl.textContent = 'Saqlash';
+    }
+
+    function setDefaultMonths() {
+      monthEl.value = currentMonthValue();
+      filterMonthEl.value = currentMonthValue();
+    }
+
+    function setCurrentMonth() {
+      filterMonthEl.value = currentMonthValue();
+      render();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function validateEntry(type, month, title, amount) {
+      if (!type || !month || !title.trim()) {
+        return "Turi, oy va nom kiritilishi kerak.";
+      }
+      if (!Number.isFinite(amount) || amount <= 0) {
+        return "Summa 0 dan katta bo‘lishi kerak.";
+      }
+      return '';
+    }
+
+    async function connectJsonFile() {
+      if (!window.showOpenFilePicker) {
+        setStatus("Bu brauzer File System Access API ni qo‘llamaydi. Chrome yoki Edge ishlating.", true);
+        return;
       }
 
-      function saveEntries() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/\"/g, '&quot;')
-          .replace(/'/g, '&#39;');
-      }
-
-      function formatMoney(value) {
-        return Number(value || 0).toLocaleString('uz-UZ') + ' so\'m';
-      }
-
-      function currentMonthValue() {
-        var d = new Date();
-        var y = d.getFullYear();
-        var m = String(d.getMonth() + 1).padStart(2, '0');
-        return y + '-' + m;
-      }
-
-      function setDefaultMonth() {
-        monthEl.value = currentMonthValue();
-        filterMonthEl.value = currentMonthValue();
-      }
-
-      function setCurrentMonth() {
-        filterMonthEl.value = currentMonthValue();
-        render();
-      }
-
-      function resetForm() {
-        editId = null;
-        typeEl.value = 'income';
-        monthEl.value = currentMonthValue();
-        titleEl.value = '';
-        amountEl.value = '';
-        noteEl.value = '';
-        saveBtnEl.textContent = 'Saqlash';
-      }
-
-      function validateEntry(type, month, title, amount) {
-        if (!type || !month || !title) {
-          return 'Turi, oy va nom kiritilishi kerak.';
-        }
-        if (!Number.isFinite(amount) || amount <= 0) {
-          return 'Summa 0 dan katta bo\'lishi kerak.';
-        }
-        return '';
-      }
-
-      function addEntry() {
-        var type = typeEl.value;
-        var month = monthEl.value;
-        var title = titleEl.value.trim();
-        var amount = Number(amountEl.value);
-        var note = noteEl.value.trim();
-
-        var errorText = validateEntry(type, month, title, amount);
-        if (errorText) {
-          alert(errorText);
-          return;
-        }
-
-        if (editId) {
-          entries = entries.map(function (item) {
-            if (item.id === editId) {
-              return {
-                id: item.id,
-                type: type,
-                month: month,
-                title: title,
-                amount: amount,
-                note: note,
-                createdAt: item.createdAt || new Date().toISOString()
-              };
+      try {
+        const [handle] = await window.showOpenFilePicker({
+          multiple: false,
+          types: [
+            {
+              description: 'JSON files',
+              accept: { 'application/json': ['.json'] }
             }
-            return item;
-          });
-        } else {
-          entries.unshift({
-            id: String(Date.now()) + '_' + Math.random().toString(36).slice(2, 8),
-            type: type,
-            month: month,
-            title: title,
-            amount: amount,
-            note: note,
-            createdAt: new Date().toISOString()
-          });
+          ]
+        });
+
+        jsonFileHandle = handle;
+        await readFromJsonFile();
+        setStatus("data.json muvaffaqiyatli ulandi.");
+      } catch (error) {
+        setStatus("Fayl ulanmadi.", true);
+      }
+    }
+
+    async function readFromJsonFile() {
+      if (!jsonFileHandle) {
+        setStatus("Avval data.json ni ulashing.", true);
+        return;
+      }
+
+      try {
+        const file = await jsonFileHandle.getFile();
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+
+        if (!Array.isArray(parsed.entries)) {
+          throw new Error('Noto‘g‘ri JSON tuzilma.');
         }
 
-        saveEntries();
-        resetForm();
+        entries = parsed.entries.map(item => ({
+          id: String(item.id || (Date.now() + Math.random())),
+          type: item.type || 'income',
+          month: item.month || currentMonthValue(),
+          title: item.title || '',
+          amount: Number(item.amount || 0),
+          note: item.note || '',
+          createdAt: item.createdAt || new Date().toISOString()
+        }));
+
         render();
+      } catch (error) {
+        setStatus("JSON o‘qishda xato: " + error.message, true);
+      }
+    }
+
+    async function writeToJsonFile() {
+      if (!jsonFileHandle) {
+        setStatus("Avval data.json ni ulashing.", true);
+        return false;
       }
 
-      function editEntry(id) {
-        var item = entries.find(function (entry) { return entry.id === id; });
-        if (!item) {
-          return;
-        }
+      try {
+        const writable = await jsonFileHandle.createWritable();
+        const payload = {
+          entries: entries
+        };
+        await writable.write(JSON.stringify(payload, null, 2));
+        await writable.close();
+        setStatus("Ma’lumot data.json ga avtomatik saqlandi.");
+        return true;
+      } catch (error) {
+        setStatus("JSON ga yozishda xato: " + error.message, true);
+        return false;
+      }
+    }
 
-        editId = id;
-        typeEl.value = item.type;
-        monthEl.value = item.month;
-        titleEl.value = item.title;
-        amountEl.value = String(item.amount);
-        noteEl.value = item.note || '';
-        saveBtnEl.textContent = 'Yangilash';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    async function addEntry() {
+      const type = typeEl.value;
+      const month = monthEl.value;
+      const title = titleEl.value.trim();
+      const amount = Number(amountEl.value);
+      const note = noteEl.value.trim();
+
+      const errorText = validateEntry(type, month, title, amount);
+      if (errorText) {
+        alert(errorText);
+        return;
       }
 
-      function deleteEntry(id) {
-        if (!window.confirm('Bu yozuvni o\'chirmoqchimisiz?')) {
-          return;
-        }
-        entries = entries.filter(function (item) { return item.id !== id; });
-        saveEntries();
-        render();
+      if (!jsonFileHandle) {
+        alert("Avval data.json ni ulab oling.");
+        return;
       }
 
-      function clearAllData() {
-        if (!window.confirm('Hamma ma\'lumot o\'chadi. Davom etasizmi?')) {
-          return;
-        }
-        entries = [];
-        saveEntries();
-        resetForm();
-        render();
-      }
-
-      function getFilteredEntries() {
-        var month = filterMonthEl.value;
-        var search = searchTextEl.value.trim().toLowerCase();
-
-        return entries.filter(function (item) {
-          var monthMatch = !month || item.month === month;
-          var text = (item.title + ' ' + (item.note || '')).toLowerCase();
-          var searchMatch = !search || text.indexOf(search) !== -1;
-          return monthMatch && searchMatch;
+      if (editId) {
+        entries = entries.map(item => {
+          if (item.id === editId) {
+            return {
+              ...item,
+              type,
+              month,
+              title,
+              amount,
+              note
+            };
+          }
+          return item;
+        });
+      } else {
+        entries.unshift({
+          id: String(Date.now()) + '_' + Math.random().toString(36).slice(2, 8),
+          type,
+          month,
+          title,
+          amount,
+          note,
+          createdAt: new Date().toISOString()
         });
       }
 
-      function calcSummary(list) {
-        return list.reduce(function (acc, item) {
-          if (item.type === 'income') acc.income += Number(item.amount) || 0;
-          if (item.type === 'expense') acc.expense += Number(item.amount) || 0;
-          if (item.type === 'debt_in') acc.debtIn += Number(item.amount) || 0;
-          if (item.type === 'debt_out') acc.debtOut += Number(item.amount) || 0;
-          return acc;
-        }, { income: 0, expense: 0, debtIn: 0, debtOut: 0 });
+      const ok = await writeToJsonFile();
+      if (ok) {
+        resetForm();
+        render();
+      }
+    }
+
+    function editEntry(id) {
+      const item = entries.find(e => e.id === id);
+      if (!item) return;
+
+      editId = id;
+      typeEl.value = item.type;
+      monthEl.value = item.month;
+      titleEl.value = item.title;
+      amountEl.value = item.amount;
+      noteEl.value = item.note || '';
+      saveBtnEl.textContent = 'Yangilash';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deleteEntry(id) {
+      if (!confirm("Bu yozuvni o‘chirmoqchimisiz?")) return;
+
+      entries = entries.filter(e => e.id !== id);
+      const ok = await writeToJsonFile();
+      if (ok) {
+        render();
+      }
+    }
+
+    async function clearAllData() {
+      if (!jsonFileHandle) {
+        alert("Avval data.json ni ulab oling.");
+        return;
       }
 
-      function renderSummary(filtered) {
-        var sums = calcSummary(filtered);
-        var balance = sums.income - sums.expense;
-        var debtBalance = sums.debtIn - sums.debtOut;
+      if (!confirm("Hamma yozuvlar o‘chadi. Davom etasizmi?")) return;
 
-        document.getElementById('totalIncome').textContent = formatMoney(sums.income);
-        document.getElementById('totalExpense').textContent = formatMoney(sums.expense);
-        document.getElementById('balance').textContent = formatMoney(balance);
-        document.getElementById('totalDebtIn').textContent = formatMoney(sums.debtIn);
-        document.getElementById('totalDebtOut').textContent = formatMoney(sums.debtOut);
-        document.getElementById('debtBalance').textContent = formatMoney(debtBalance);
+      entries = [];
+      const ok = await writeToJsonFile();
+      if (ok) {
+        resetForm();
+        render();
+      }
+    }
+
+    function getFilteredEntries() {
+      const month = filterMonthEl.value;
+      const search = searchTextEl.value.trim().toLowerCase();
+
+      return entries.filter(item => {
+        const monthMatch = !month || item.month === month;
+        const text = (item.title + ' ' + (item.note || '')).toLowerCase();
+        const searchMatch = !search || text.includes(search);
+        return monthMatch && searchMatch;
+      });
+    }
+
+    function calcSummary(list) {
+      return list.reduce((acc, item) => {
+        if (item.type === 'income') acc.income += Number(item.amount) || 0;
+        if (item.type === 'expense') acc.expense += Number(item.amount) || 0;
+        if (item.type === 'debt_in') acc.debtIn += Number(item.amount) || 0;
+        if (item.type === 'debt_out') acc.debtOut += Number(item.amount) || 0;
+        return acc;
+      }, { income: 0, expense: 0, debtIn: 0, debtOut: 0 });
+    }
+
+    function renderSummary(filtered) {
+      const sums = calcSummary(filtered);
+      const balance = sums.income - sums.expense;
+      const debtBalance = sums.debtIn - sums.debtOut;
+
+      document.getElementById('totalIncome').textContent = formatMoney(sums.income);
+      document.getElementById('totalExpense').textContent = formatMoney(sums.expense);
+      document.getElementById('balance').textContent = formatMoney(balance);
+      document.getElementById('totalDebtIn').textContent = formatMoney(sums.debtIn);
+      document.getElementById('totalDebtOut').textContent = formatMoney(sums.debtOut);
+      document.getElementById('debtBalance').textContent = formatMoney(debtBalance);
+    }
+
+    function getBadge(type) {
+      if (type === 'income') return '<span class="badge badge-income">Daromad</span>';
+      if (type === 'expense') return '<span class="badge badge-expense">Harajat</span>';
+      if (type === 'debt_in') return '<span class="badge badge-debt-in">Qarz olindi</span>';
+      return '<span class="badge badge-debt-out">Qarz qaytarildi</span>';
+    }
+
+    function renderTable(filtered) {
+      if (!filtered.length) {
+        tableWrapEl.innerHTML = '<div class="empty">Hozircha yozuvlar yo‘q</div>';
+        return;
       }
 
-      function getBadge(type) {
-        if (type === 'income') return '<span class="badge badge-income">Daromad</span>';
-        if (type === 'expense') return '<span class="badge badge-expense">Harajat</span>';
-        if (type === 'debt_in') return '<span class="badge badge-debt-in">Qarz olindi</span>';
-        return '<span class="badge badge-debt-out">Qarz qaytarildi</span>';
-      }
+      let html = '';
+      html += '<table>';
+      html += '<thead><tr>';
+      html += '<th>Turi</th>';
+      html += '<th>Oy</th>';
+      html += '<th>Nomi</th>';
+      html += '<th>Summa</th>';
+      html += '<th>Izoh</th>';
+      html += '<th>Amal</th>';
+      html += '</tr></thead><tbody>';
 
-      function renderTable(filtered) {
-        if (!filtered.length) {
-          tableWrapEl.innerHTML = '<div class="empty">Hozircha yozuvlar yo\'q</div>';
-          return;
-        }
-
-        var html = '';
-        html += '<table>';
-        html += '<thead>';
+      filtered.forEach(item => {
         html += '<tr>';
-        html += '<th>Turi</th>';
-        html += '<th>Oy</th>';
-        html += '<th>Nomi</th>';
-        html += '<th>Summa</th>';
-        html += '<th>Izoh</th>';
-        html += '<th>Amal</th>';
+        html += '<td>' + getBadge(item.type) + '</td>';
+        html += '<td>' + escapeHtml(item.month) + '</td>';
+        html += '<td>' + escapeHtml(item.title) + '</td>';
+        html += '<td>' + escapeHtml(formatMoney(item.amount)) + '</td>';
+        html += '<td>' + escapeHtml(item.note || '-') + '</td>';
+        html += '<td><div class="actions">';
+        html += '<button class="btn btn-secondary" type="button" data-action="edit" data-id="' + escapeHtml(item.id) + '">Tahrirlash</button>';
+        html += '<button class="btn btn-danger" type="button" data-action="delete" data-id="' + escapeHtml(item.id) + '">O‘chirish</button>';
+        html += '</div></td>';
         html += '</tr>';
-        html += '</thead>';
-        html += '<tbody>';
-
-        filtered.forEach(function (item) {
-          html += '<tr>';
-          html += '<td>' + getBadge(item.type) + '</td>';
-          html += '<td>' + escapeHtml(item.month) + '</td>';
-          html += '<td>' + escapeHtml(item.title) + '</td>';
-          html += '<td>' + escapeHtml(formatMoney(item.amount)) + '</td>';
-          html += '<td>' + escapeHtml(item.note || '-') + '</td>';
-          html += '<td>';
-          html += '<div class="actions">';
-          html += '<button class="btn btn-secondary" type="button" data-action="edit" data-id="' + escapeHtml(item.id) + '">Tahrirlash</button>';
-          html += '<button class="btn btn-danger" type="button" data-action="delete" data-id="' + escapeHtml(item.id) + '">O\'chirish</button>';
-          html += '</div>';
-          html += '</td>';
-          html += '</tr>';
-        });
-
-        html += '</tbody>';
-        html += '</table>';
-        tableWrapEl.innerHTML = html;
-      }
-
-      function render() {
-        var filtered = getFilteredEntries();
-        renderSummary(filtered);
-        renderTable(filtered);
-      }
-
-      function runTests() {
-        var tests = [];
-
-        function assert(name, condition) {
-          tests.push({ name: name, ok: Boolean(condition) });
-        }
-
-        var month = currentMonthValue();
-        var sample = [
-          { type: 'income', amount: 5000000, month: month, title: 'Oylik', note: '' },
-          { type: 'income', amount: 250000, month: month, title: 'Bonus', note: '' },
-          { type: 'expense', amount: 1200000, month: month, title: 'Ijara', note: '' },
-          { type: 'debt_in', amount: 700000, month: month, title: 'Akadan', note: '' },
-          { type: 'debt_out', amount: 200000, month: month, title: 'Qaytarildi', note: '' }
-        ];
-
-        var sums = calcSummary(sample);
-        assert('Daromad yig\'indisi to\'g\'ri', sums.income === 5250000);
-        assert('Harajat yig\'indisi to\'g\'ri', sums.expense === 1200000);
-        assert('Qarz olindi yig\'indisi to\'g\'ri', sums.debtIn === 700000);
-        assert('Qarz qaytarildi yig\'indisi to\'g\'ri', sums.debtOut === 200000);
-        assert('Balans to\'g\'ri', (sums.income - sums.expense) === 4050000);
-        assert('Qarz balansi to\'g\'ri', (sums.debtIn - sums.debtOut) === 500000);
-        assert('Format money matn qaytaradi', formatMoney(1000).indexOf('1000') === -1 || typeof formatMoney(1000) === 'string');
-        assert('Validatsiya bo\'sh nomni ushlaydi', validateEntry('income', month, '', 1000) !== '');
-        assert('Validatsiya manfiy summani ushlaydi', validateEntry('income', month, 'Test', -5) !== '');
-        assert('Validatsiya to\'g\'ri yozuvni qabul qiladi', validateEntry('income', month, 'Test', 1000) === '');
-
-        var passed = tests.filter(function (t) { return t.ok; }).length;
-        var failed = tests.length - passed;
-        var message = 'Testlar: ' + passed + ' ta o\'tdi';
-        if (failed > 0) {
-          message += ', ' + failed + ' ta yiqildi';
-        }
-        testStatusEl.textContent = message;
-        testStatusEl.style.color = failed ? '#b91c1c' : '#166534';
-        testStatusEl.style.background = failed ? '#fef2f2' : '#f0fdf4';
-        testStatusEl.style.borderColor = failed ? '#fecaca' : '#bbf7d0';
-        console.log('Pul Hisobchi testlari:', tests);
-      }
-
-      saveBtnEl.addEventListener('click', addEntry);
-      clearAllBtnEl.addEventListener('click', clearAllData);
-      currentMonthBtnEl.addEventListener('click', setCurrentMonth);
-      filterMonthEl.addEventListener('change', render);
-      searchTextEl.addEventListener('input', render);
-
-      tableWrapEl.addEventListener('click', function (event) {
-        var target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        var action = target.getAttribute('data-action');
-        var id = target.getAttribute('data-id');
-        if (!action || !id) {
-          return;
-        }
-        if (action === 'edit') {
-          editEntry(id);
-        }
-        if (action === 'delete') {
-          deleteEntry(id);
-        }
       });
 
-      setDefaultMonth();
-      resetForm();
-      render();
-      runTests();
-    })();
+      html += '</tbody></table>';
+      tableWrapEl.innerHTML = html;
+    }
+
+    function render() {
+      const filtered = getFilteredEntries();
+      renderSummary(filtered);
+      renderTable(filtered);
+    }
+
+    saveBtnEl.addEventListener('click', addEntry);
+    connectFileBtnEl.addEventListener('click', connectJsonFile);
+    reloadBtnEl.addEventListener('click', readFromJsonFile);
+    clearAllBtnEl.addEventListener('click', clearAllData);
+    currentMonthBtnEl.addEventListener('click', setCurrentMonth);
+    filterMonthEl.addEventListener('change', render);
+    searchTextEl.addEventListener('input', render);
+
+    tableWrapEl.addEventListener('click', async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const action = target.getAttribute('data-action');
+      const id = target.getAttribute('data-id');
+      if (!action || !id) return;
+
+      if (action === 'edit') editEntry(id);
+      if (action === 'delete') await deleteEntry(id);
+    });
+
+    setDefaultMonths();
+    resetForm();
+    render();
   </script>
 </body>
 </html>
